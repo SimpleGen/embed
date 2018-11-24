@@ -46,54 +46,6 @@ async def on_message(message):
         await client.send_message(message.author, "http://stratoplot.com/1gxe")
 
     if message.content.lower().startswith("-minecraft"):
-        await client.send_message(message.author, "http://stratoplot.com/4Qmi")import discord
-
-client = discord.Client()
-testmsgid = None
-testmsguser = None
-
-
-@client.event
-async def on_ready():
-    print(client.user.name)
-    print("========")
-
-@client.event
-async def on_message(message):
-    if message.content.lower().startswith("-coder"):
-        await client.send_message(message.channel, "SimpleGen")
-
-    if message.content.lower().startswith("-help"):
-    var embed = new Discord.RichEmbed()
-          .setTitle("Commands List")
-        .setDescription("SimpleGen")
-        .addField("-user", "Get a minecraft account")
-        .addField("-coder", "Get a spotify account")
-        .addField("-uplay", "Get a uplay account")
-        .addField("-spotify", "Get a spotify account")
-        .addField("-mc/-minecraft", "Get a minecraft account")
-		.addField("-spotify", "Get a spotify account")
-		.addField("-shop", "Get a netflix account")
-		.addField("-pornhub", "Get a pornhub account")
-		.addField("-hulu", "Get a hulu account")
-		.addField("-wip", "WIP")
-        .setColor("0x6ce559")
-     msg.channel.send(embed);
-  }	
-
-    if message.content.lower().startswith("-uplay"):
-        await client.send_message(message.author, "http://stratoplot.com/rzD")
-
-    if message.content.lower().startswith("-spotify"):
-        await client.send_message(message.author, "http://stratoplot.com/53C1")
-
-    if message.content.lower().startswith("-mc"):
-        await client.send_message(message.author, "http://stratoplot.com/4Qmi")
-
-    if message.content.lower().startswith("-shop"):
-        await client.send_message(message.author, "http://stratoplot.com/1gxe")
-
-    if message.content.lower().startswith("-minecraft"):
         await client.send_message(message.author, "http://stratoplot.com/4Qmi")
 
     if message.content.lower().startswith("-CrackerJr"):
@@ -131,39 +83,3 @@ async def on_reaction_add(reaction, user):
         await client.send_message(chat, "Kein user")
 
 client.run('NTE1MjcwOTE5OD685TI0MzYz.DtirDQ.7Rsodi8CQ2zP2MfkOItqRQzuzA8')
-
-    if message.content.lower().startswith("-CrackerJr"):
-        await client.send_message(message.author, "Wartung")
-
-    if message.content.lower().startswith("-pornhub"):
-        await client.send_message(message.author, "")
-
-    if message.content.lower().startswith("-hulu"):
-        await client.send_message(message.author, "http://stratoplot.com/55MZ")
-
-    if message.content.lower().startswith("-user"):
-        botmsg = await client.send_message(message.channel, "?? or ??")
-
-        await client.add_reaction(botmsg, "??")
-        await client.add_reaction(botmsg, "??")
-
-        global testmsgid
-        testmsgid = botmsg.id
-
-        global testmsguser
-        testmsguser = message.author
-
-@client.event
-async def on_reaction_add(reaction, user):
-    msg = reaction.message
-    chat = reaction.message.channel
-
-    if reaction.emoji == "??" and msg.id == testmsgid and user == testmsguser:
-        role = discord.utils.find(lambda r: r.name == "user", msg.server.roles)
-        await client.add_roles(user, role)
-        await client.send_message(chat, "User")
-
-    if reaction.emoji == "??" and msg.id == testmsgid and user == testmsguser:
-        await client.send_message(chat, "Kein user")
-
-client.run('ARSAty3hVXvbMzMKvhF_lVukzLeJTDnm')
