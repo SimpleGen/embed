@@ -1,85 +1,331 @@
 import discord
+from discord.ext.commands import Bot
+from discord.ext import commands
+import asyncio
+import time
+import random
+from discord import Game
 
-client = discord.Client()
+TOKEN = "NTgxODA5ODU1OTU0NjgxODc2.XOmTnA.PRpqxPuMCQzHT-SqJES7lsZhMcQ"
+client = commands.Bot(command_prefix="/")
+
+Client = discord.client
+Clientdiscord = discord.Client()
+
 testmsgid = None
 testmsguser = None
-
+botmsg = None
+msg = None
 
 @client.event
 async def on_ready():
-    print(client.user.name)
-    print("========")
+    print ("I am running on")
+    await client.change_presence(activity=discord.Game(name="/shelp | 7sek"))
+
+@client.command()
+async def report(ctx, member: discord.Member = None):
+    channel = discord.utils.get(member.guild.channels, name="support")
+    emb = (discord.Embed(description="Report", color=0x2DF270))
+    emb.add_field(name=f"The member {member.mention} was reported.", value="------------------", inline=False)
+    await channel.send(embed=emb)
+    await channel.send(f"{member.mention}")
+    if not member:
+        await ctx.send("Spectify a member")
+        return
+    await ctx.send(f"{member.mention} reported")
+
+@client.command()
+@commands.has_permissions(kick_members=True)
+async def kick(ctx, member: discord.Member, *, reason=None):
+    if not member:
+        await ctx.send("Please specify a member")
+        return
+    await member.kick(reason=reason)
+    await ctx.send(f"{member.mention} kicked")
+
+
+@kick.error
+async def kick_error(ctx, error):
+    if isinstance(error, commands.CheckFailure):
+        await channel.send(f"You do not have enough permissions {member.mention}")
+
+@client.command()
+@commands.has_permissions(administrator=True)
+async def ocase(ctx, member: discord.Member = None):
+    await ctx.send("I open the case, please wait")
+    await asyncio.sleep(3)
+    choices = ['You won -> `Legend`',
+               'You won -> `Legend`',
+               'You won -> `Nothing`',
+               'You won -> `Nothing`',
+               'You won -> `Nothing`',
+               'You won -> `Nothing`',
+               'You won -> `Nothing`',
+               'You won -> `Hero`',
+               'You won -> `Simple`',
+               'You won -> `Simple`',
+               'You won -> `Simple`',]
+    rancoin = random.choice(choices)
+    await ctx.send(rancoin)
+
+@ocase.error
+async def ocase_error(ctx, error):
+    if isinstance(error, commands.CheckFailure):
+        await channel.send(f"You do not have enough permissions {member.mention}")
+
+
+@client.command()
+@commands.has_permissions(administrator=True)
+async def caseadmin(ctx, member: discord.Member = None):
+    await ctx.send("Only the guys with the permission instant invite can open the case so create a role with the permission instant invite and user will open it with /ocase")
+
+
+@caseadmin.error
+async def caseadmin_error(ctx, error):
+    if isinstance(error, commands.CheckFailure):
+        await channel.send(f"You do not have enough permissions {member.mention}")
+
+@client.command()
+async def case(ctx, member: discord.Member = None):
+    emb = (discord.Embed(description="Case Info", color=0x2DF270))
+    emb.add_field(name="/casei", value="see the case information!", inline=False)
+    emb.add_field(name="/ocase", value="open the case!", inline=False)
+    emb.add_field(name="/case_admin", value="only for administrator", inline=False)
+    emb.set_thumbnail(url="https://media.discordapp.net/attachments/399575754012229632/579027145628844033/8sek.png?width=676&height=676")
+    await ctx.send(embed=emb)
+
+
+@client.command()
+@commands.has_permissions(ban_members=True)
+async def ban(ctx, member: discord.Member, *, reason=None):
+    if not member:
+        await ctx.send("Please specify a member")
+        return
+    await member.ban(reason=reason)
+    await ctx.send(f"{member.mention} got ban")
+
+@ban.error
+async def kick_error(ctx, error):
+    if isinstance(error, commands.CheckFailure):
+        await channel.send(f"You do not have enough permissions {member.mention}")
+
+
+@client.command()
+@commands.has_permissions(mute_members=True)
+async def mute(ctx, member: discord.Member = None):
+    if not member:
+        await ctx.send("Please specify a member")
+        return
+    role = discord.utils.get(ctx.guild.roles, name="muted")
+    await member.add_roles(role)
+    await ctx.send(f"{member.mention} muted")
+
+
+@mute.error
+async def mute_error(ctx, error):
+    if isinstance(error, commands.CheckFailure):
+        await channel.send(f"You do not have enough permissions {member.mention}")
+
+@client.command()
+async def verify(ctx, member: discord.Member = None):
+    if not member:
+        await ctx.author.send("Please type your name")
+        return
+    role = discord.utils.get(ctx.guild.roles, name="User")
+    await member.add_roles(role)
+    await ctx.author.send(f"I verified User: {member.mention} with the ID: {member.id}")
+    await ctx.channel.send(f"{member.mention} Check your DMs!")
+
+@mute.error
+async def verify_error(ctx, error):
+    if isinstance(error, commands.CheckFailure):
+        await channel.send(f"You do not have enough permissions {member.mention}")
+
+@client.command()
+async def id(ctx, member: discord.Member = None):
+    if not member:
+        await ctx.send("Please type your name")
+        return
+    await ctx.send(f"ID: {member.id}")
+
+@client.command()
+@commands.has_permissions(administrator=True)
+async def unmute(ctx, member: discord.Member = None):
+    if not member:
+        await ctx.send("Please specify a member")
+        return
+    role = discord.utils.get(ctx.guild.roles, name="muted")
+    await member.remove_roles(role)
+
+@mute.error
+async def unmute_error(ctx, error):
+    if isinstance(error, commands.CheckFailure):
+        await ctx.send(f"You do not have enough permissions {member.mention}")
+
+@client.command()
+@commands.has_permissions(manage_messages=True)
+async def clear(ctx, amount=5):
+        await ctx.channel.purge(limit=amount)
+
+@clear.error
+async def clear_error(ctx, error):
+    if isinstance(error, commands.CheckFailure):
+        await channel.send(f"You do not have enough permissions {member.mention}")
+
+@client.command()
+@commands.has_permissions(manage_messages=True)
+async def iclear(ctx, amount=5):
+        await ctx.channel.purge(limit=amount)
+
+@iclear.error
+async def iclear_error(ctx, error):
+    if isinstance(error, commands.CheckFailure):
+        await channel.send(f"You do not have enough permissions {member.mention}")
+
+@client.command()
+async def cf(ctx, member: discord.Member = None):
+    await ctx.send("I start the CoinFlip")
+    await asyncio.sleep(3)
+    choices = ['💰 `WIN`', '😢 `LOSE`']
+    rancoin = random.choice(choices)
+    await ctx.send(rancoin)
+
+@client.command()
+async def bot(ctx):
+    await ctx.send("https://www.youtube.com/channel/UCDtcgX8sCmNS8_CKeJJpnzw?view_as=subscriber")
+    await ctx.send("https://discord.gg/eSYMFhw")
+
+@client.command()
+async def friend(ctx):
+    await ctx.send("https://www.youtube.com/channel/UCNT3gMwV8WSL5NCinBc4GxA")
+
+@client.command()
+async def spend(ctx):
+    emb = (discord.Embed(description="Donate / PayPal", color=0x2DF270))
+    emb.add_field(name="PayPal", value="simplebuildnetzwerk@gmail.com", inline=False)
+    await ctx.author.send(embed=emb)
+
+@client.command()
+@commands.has_permissions(send_messages=True)
+async def ping(ctx, member: discord.Member = None):
+    await ctx.send("I check your ping, please wait!")
+    await asyncio.sleep(3)
+    emb = (discord.Embed(description="SupportBot", color=0x2DF270))
+    emb.add_field(name="You have a:", value=f"{round(client.latency * 1000)}ms")
+    await ctx.send(embed=emb)
+
+@ping.error
+async def ping_error(ctx, error):
+    if isinstance(error, commands.CheckFailure):
+        await channel.send(f"You do not have enough permissions {member.mention}")
+
+@client.command()
+async def shelp(ctx):
+    emb = (discord.Embed(description="SupportBot Help", color=0x2DF270))
+    emb.set_author(name="7sek")
+    emb.add_field(name="/kick", value="to kick people", inline=False)
+    emb.add_field(name="/ban", value="to ban people", inline=False)
+    emb.add_field(name="/mute", value="to mute people", inline=False)
+    emb.add_field(name="/mute1", value="to mute people 1hour", inline=False)
+    emb.add_field(name="/unmute", value="to unmute people", inline=False)
+    emb.add_field(name="/clear 0-100", value="clear the chat", inline=False)
+    emb.add_field(name="/iclear", value="instant chat clear", inline=False)
+    emb.add_field(name="/bot", value="send the youtube channel link and the discord invite link", inline=False)
+    emb.add_field(name="/friend", value="send the youtube channel from the friend of the developer", inline=False)
+    emb.add_field(name="/spend", value="get the spend email (paypal)", inline=False)
+    emb.add_field(name="/userinfo", value="get the userinfo", inline=False)
+    emb.add_field(name="/id", value="get the user id", inline=False)
+    emb.add_field(name="/cf", value="coins flip", inline=False)
+    emb.add_field(name="/case", value="open a rang case (only on Events)", inline=False)
+    emb.add_field(name="/ping", value="you can see your ms", inline=False)
+    emb.add_field(name="/verify (your name)", value="if you not have the user rank", inline=False)
+    emb.add_field(name="Create a rule User", value="new user will get this rule", inline=False)
+    emb.add_field(name="Create a log channel", value="to send a welcome message", inline=False)
+    emb.set_image(url="https://media.discordapp.net/attachments/399575754012229632/579027145628844033/8sek.png?width=676&height=676")
+    emb.set_thumbnail(url="https://media.discordapp.net/attachments/399575754012229632/579027145628844033/8sek.png?width=676&height=676")
+    await ctx.send(embed=emb)
+
+@client.command()
+async def userinfo(ctx, member: discord.Member = None):
+    member = ctx.author if not member else member
+    roles = [role for role in member.roles]
+
+    embed = discord.Embed(colour=member.color, timestamp=ctx.message.created_at)
+
+    embed.set_author(name=f"User Info - {member}")
+    embed.set_thumbnail(url=member.avatar_url)
+    embed.set_footer(text=f"Requested by {ctx.author}", icon_url=ctx.author.avatar_url)
+
+    embed.add_field(name="ID:", value=member.id)
+    embed.add_field(name="Name:", value=member.display_name)
+
+    embed.add_field(name="Created at:", value=member.created_at.strftime("%a, %#d %B %Y, %I:%M %p"))
+    embed.add_field(name="Joined at:", value=member.created_at.strftime("%a, %#d %B %Y, %I:%M %p"))
+
+    embed.add_field(name=f"Roles {(len(roles))}", value=" ".join([role.mention for role in roles]))
+    embed.add_field(name="Top role:", value=member.top_role.mention)
+
+    embed.add_field(name="Bot by 7sek", value="/bot")
+
+    await ctx.send(embed=embed)
+
+@client.command()
+@commands.has_permissions(administrator=True)
+async def crackerm(ctx, member: discord.Member = None):
+    if not member:
+        await ctx.send("Please type you name! -crackerm @name")
+        return
+    await ctx.send("You will get the rank the next secounds")
+    await asyncio.sleep(3)
+    role = discord.utils.get(ctx.guild.roles, name="Cracker Lite")
+    await member.add_roles(role)
+    await asyncio.sleep(2592000)
+    await member.remove_roles(role)
+
+@client.command()
+@commands.has_permissions(administrator=True)
+async def cracker1(ctx, member: discord.Member = None):
+    if not member:
+        await ctx.send("Please type you name! -crackerm @name")
+        return
+    await ctx.send("You will get the rank the next secounds")
+    await asyncio.sleep(3)
+    role = discord.utils.get(ctx.guild.roles, name="Cracker Lite")
+    await member.add_roles(role)
+    await asyncio.sleep(604800)
+    await member.remove_roles(role)
+
+@client.command()
+@commands.has_permissions(administrator=True)
+async def cracker2(ctx, member: discord.Member = None):
+    if not member:
+        await ctx.send("Please type you name! -crackerm @name")
+        return
+    await ctx.send("You will get the rank the next secounds")
+    await asyncio.sleep(3)
+    role = discord.utils.get(ctx.guild.roles, name="Cracker Lite")
+    await member.add_roles(role)
+    await asyncio.sleep(1209600)
+    await member.remove_roles(role)
+
+@client.command()
+@commands.has_permissions(administrator=True)
+async def rankhelp(ctx):
+    emb = (discord.Embed(titile="SupportBot Help", color=0x2DF270))
+    emb.set_author(name="7sek")
+    emb.add_field(name="/crackerm", value="cracker lite one month", inline=False)
+    emb.add_field(name="/cracker2", value="cracker lite two week", inline=False)
+    emb.add_field(name="/cracker1", value="cracker lite one week", inline=False)
+    emb.set_thumbnail(url="https://media.discordapp.net/attachments/399575754012229632/579027145628844033/8sek.png?width=676&height=676")
+    await ctx.send(embed=emb)
 
 @client.event
-async def on_message(message):
-    if message.content.lower().startswith("-coder"):
-        await client.send_message(message.channel, "SimpleGen")
+async def on_member_join(member):
+    channel = discord.utils.get(member.guild.channels, name="log")
+    emb = (discord.Embed(description="SupportBot", color=0x2DF270))
+    emb.add_field(name=f"Welcome on our discord server", value=member.display_name)
+    await channel.send(embed=emb)
+    role = discord.utils.get(member.guild.roles, name="User")
+    await member.add_roles(role)
 
-    if message.content.lower().startswith("-help"):
-    var embed = new Discord.RichEmbed()
-          .setTitle("Commands List")
-        .setDescription("SimpleGen")
-        .addField("-user", "Get a minecraft account")
-        .addField("-coder", "Get a spotify account")
-        .addField("-uplay", "Get a uplay account")
-        .addField("-spotify", "Get a spotify account")
-        .addField("-mc/-minecraft", "Get a minecraft account")
-		.addField("-spotify", "Get a spotify account")
-		.addField("-shop", "Get a netflix account")
-		.addField("-pornhub", "Get a pornhub account")
-		.addField("-hulu", "Get a hulu account")
-		.addField("-wip", "WIP")
-        .setColor("0x6ce559")
-     msg.channel.send(embed);
-  }	
-
-    if message.content.lower().startswith("-uplay"):
-        await client.send_message(message.author, "http://stratoplot.com/rzD")
-
-    if message.content.lower().startswith("-spotify"):
-        await client.send_message(message.author, "http://stratoplot.com/53C1")
-
-    if message.content.lower().startswith("-mc"):
-        await client.send_message(message.author, "http://stratoplot.com/4Qmi")
-
-    if message.content.lower().startswith("-shop"):
-        await client.send_message(message.author, "http://stratoplot.com/1gxe")
-
-    if message.content.lower().startswith("-minecraft"):
-        await client.send_message(message.author, "http://stratoplot.com/4Qmi")
-
-    if message.content.lower().startswith("-CrackerJr"):
-        await client.send_message(message.author, "Wartung")
-
-    if message.content.lower().startswith("-pornhub"):
-        await client.send_message(message.author, "")
-
-    if message.content.lower().startswith("-hulu"):
-        await client.send_message(message.author, "http://stratoplot.com/55MZ")
-
-    if message.content.lower().startswith("-user"):
-        botmsg = await client.send_message(message.channel, "?? or ??")
-
-        await client.add_reaction(botmsg, "??")
-        await client.add_reaction(botmsg, "??")
-
-        global testmsgid
-        testmsgid = botmsg.id
-
-        global testmsguser
-        testmsguser = message.author
-
-@client.event
-async def on_reaction_add(reaction, user):
-    msg = reaction.message
-    chat = reaction.message.channel
-
-    if reaction.emoji == "??" and msg.id == testmsgid and user == testmsguser:
-        role = discord.utils.find(lambda r: r.name == "user", msg.server.roles)
-        await client.add_roles(user, role)
-        await client.send_message(chat, "User")
-
-    if reaction.emoji == "??" and msg.id == testmsgid and user == testmsguser:
-        await client.send_message(chat, "Kein user")
-
-client.run('NTE1MjcwOTE5OD685TI0MzYz.DtirDQ.7Rsodi8CQ2zP2MfkOItqRQzuzA8')
+client.run("NTgxODA5ODU1OTU0NjgxODc2.XOmTnA.PRpqxPuMCQzHT-SqJES7lsZhMcQ")
